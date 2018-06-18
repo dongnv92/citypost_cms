@@ -11,6 +11,75 @@ if(!$user_id){
 }
 $admin_active   = 'transactions';
 switch ($act){
+    case 'update':
+        $tranactions = getGlobalAll(_DB_TABLE_TRANSACTIONS, array('id' => $id), array('onecolum' => 'limit'));
+        if(!$tranactions){
+            header('location:'._URL_ADMIN.'/transactions.php');
+        }
+
+        if($submit){
+            $status_01  = (isset($_POST['status_01'])   && !empty($_POST['status_01'])) ? $_POST['status_01']   : '';
+            $status_02  = (isset($_POST['status_02'])   && !empty($_POST['status_02'])) ? $_POST['status_02']   : '';
+            $status_03  = (isset($_POST['status_03'])   && !empty($_POST['status_03'])) ? $_POST['status_03']   : '';
+            $status_04  = (isset($_POST['status_04'])   && !empty($_POST['status_04'])) ? $_POST['status_04']   : '';
+            $data   = array(
+                'status_01'   => $status_01,
+                'status_02'   => $status_02,
+                'status_03'   => $status_03,
+                'status_04'   => $status_04
+            );
+            $where  = array('id' => $id);
+            updateGlobal(_DB_TABLE_TRANSACTIONS, $data, $where);
+            $tranactions = getGlobalAll(_DB_TABLE_TRANSACTIONS, array('id' => $id), array('onecolum' => 'limit'));
+        }
+
+        $admin_title = 'Chỉnh sửa giao dịch '.$tranactions['transID'];
+        require_once 'header.php';
+        ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title" id="horz-layout-basic"><?php echo $admin_title;?></h4>
+                        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+                        <div class="heading-elements">
+                            <ul class="list-inline mb-0">
+                                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+                                <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
+                                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-content collpase show">
+                        <?php if($submit){echo '<p class="text-center text-success">Update thành công</p>';}?>
+                        <form class="form form-horizontal" action="" method="post">
+                            <div class="form-group row">
+                                <label class="col-md-3 label-control">Mã Status 01</label>
+                                <div class="col-md-9"><input type="text" class="form-control" placeholder="Mã Status 01" name="status_01" value="<?php echo $tranactions['status_01'];?>" /></div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 label-control">Mã Status 02</label>
+                                <div class="col-md-9"><input type="text" class="form-control" placeholder="Mã Status 02" name="status_02" value="<?php echo $tranactions['status_02'];?>" /></div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 label-control">Mã Status 03</label>
+                                <div class="col-md-9"><input type="text" class="form-control" placeholder="Mã Status 03" name="status_03" value="<?php echo $tranactions['status_03'];?>" /></div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 label-control">Mã Status 04</label>
+                                <div class="col-md-9"><input type="text" class="form-control" placeholder="Mã Status 04" name="status_04" value="<?php echo $tranactions['status_04'];?>" /></div>
+                            </div>
+                            <div class="form-actions text-center">
+                                <button type="button" class="btn btn-warning mr-1" onclick="javascript:location.href='<?php echo _URL_ADMIN.'/transactions.php?Act=detail&transID='.$tranactions['transID'];?>'"><i class="ft-x"></i> Quay lại</button>
+                                <input type="submit" name="submit" class="btn btn-primary" value="Cập nhập" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+        break;
     case 'detail':
         $transID        = $_REQUEST['transID'];
         $transactions   = getGlobalAll(_DB_TABLE_TRANSACTIONS, array('transID' => $transID), array('onecolum' => 'limit'));
@@ -19,46 +88,46 @@ switch ($act){
         $device         = getDeveloperInfo();
         $tab            = array();
 
-        if($transactions['status_02'] == 0 && $transactions['status_03'] == 0 && ($transactions['status_04'] != 104 && $transactions['status_04'] != 204)){ // Nếu trường status 02, 03, 04 bằng 0
+        if($transactions['status_02'] == 0 && $transactions['status_03'] == 0 && $transactions['status_04'] != 104){ // Nếu trường status 02, 03, 04 bằng 0
             $tab['class_1'] = 'first done current';
             $tab['class_2'] = 'disabled';
             $tab['class_3'] = 'disabled';
             $tab['class_4'] = 'disabled last';
-            $tab['text_1']  = $transactions['timeReq'];
+            $tab['text_1']  = getViewTime($transactions['timeReq']);
             $tab['text_2']  = '';
             $tab['text_3']  = '';
             $tab['text_4']  = '';
-        }else if($transactions['status_02'] != 0 && $transactions['status_03'] == 0 && ($transactions['status_04'] != 104 && $transactions['status_04'] != 204)){ // Nếu trường status 02 khác 0 và 03, 04 bằng 0
+        }else if($transactions['status_02'] != 0 && $transactions['status_03'] == 0 && $transactions['status_04'] != 104){ // Nếu trường status 02 khác 0 và 03, 04 bằng 0
             $tab['class_1'] = 'first done';
             $tab['class_2'] = 'current';
             $tab['class_3'] = 'disabled';
             $tab['class_4'] = 'disabled last';
-            $tab['text_1']  = $transactions['timeReq'];
-            $tab['text_2']  = $transactions['time_02'];
+            $tab['text_1']  = getViewTime($transactions['timeReq']);
+            $tab['text_2']  = getViewTime($transactions['time_02']);
             $tab['text_3']  = '';
             $tab['text_4']  = '';
-        }else if($transactions['status_02'] != 0 && $transactions['status_03'] != 0 && ($transactions['status_04'] != 104 && $transactions['status_04'] != 204)){ // Nếu trường status 02,03 khác 0 và 04 bằng 0
+        }else if($transactions['status_02'] != 0 && $transactions['status_03'] != 0 && $transactions['status_04'] != 104){ // Nếu trường status 02,03 khác 0 và 04 bằng 0
             $tab['class_1'] = 'first done';
             $tab['class_2'] = 'done';
             $tab['class_3'] = 'current';
             $tab['class_4'] = 'disabled last';
-            $tab['text_1']  = $transactions['timeReq'];
-            $tab['text_2']  = $transactions['time_02'];
-            $tab['text_3']  = $transactions['time_03'];
+            $tab['text_1']  = getViewTime($transactions['timeReq']);
+            $tab['text_2']  = getViewTime($transactions['time_02']);
+            $tab['text_3']  = getViewTime($transactions['time_03']);
             $tab['text_4']  = '';
-        }else if($transactions['status_02'] != 0 && $transactions['status_03'] != 0 && ($transactions['status_04'] == 104 || $transactions['status_04'] == 204)){ // Nếu trường status 02,03,04 khác 0
+        }else if($transactions['status_02'] != 0 && $transactions['status_03'] != 0 && $transactions['status_04'] == 104){ // Nếu trường status 02,03,04 khác 0
             $tab['class_1'] = 'first done';
             $tab['class_2'] = 'done';
             $tab['class_3'] = 'done';
             $tab['class_4'] = 'done current last';
-            $tab['text_1']  = $transactions['timeReq'];
-            $tab['text_2']  = $transactions['time_02'];
-            $tab['text_3']  = $transactions['time_03'];
-            $tab['text_4']  = $transactions['time_04'];
+            $tab['text_1']  = getViewTime($transactions['timeReq']);
+            $tab['text_2']  = getViewTime($transactions['time_02']);
+            $tab['text_3']  = getViewTime($transactions['time_03']);
+            $tab['text_4']  = getViewTime($transactions['time_04']);
         }
         if($transactions['status_04'] == 301){
             $tab['text_04'] = '<strong class="danger">Khách hàng đã bấm hủy</strong>';
-            $tab['text_4']  = $transactions['time_04'];
+            $tab['text_4']  = getViewTime($transactions['time_04']);
         }
 
         $admin_title    = 'Chi tiết giao dịch - '.$transactions['transID'];
@@ -115,7 +184,11 @@ switch ($act){
                                     </tr>
                                     <tr class="bg-blue bg-lighten-5">
                                         <td class="primary">Địa chỉ khách hàng</td>
-                                        <td><?php echo $transactions['addr_send'];?></td>
+                                        <td><?php echo $cusID['addr_receive'];?></td>
+                                    </tr>
+                                    <tr class="bg-blue bg-lighten-5">
+                                        <td class="primary"></td>
+                                        <td><a href="<?php echo _URL_ADMIN.'/transactions.php?act=update&id='.$transactions['id'];?>">Chỉnh sửa</a></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -127,13 +200,13 @@ switch ($act){
         <?php
         break;
     default:
-        $today          = date('d/m/Y', _CONFIG_TIME);
-        $week_start     = date('d/m/Y', strtotime('monday this week', _CONFIG_TIME));
-        $week_end       = date('d/m/Y', strtotime('sunday this week', _CONFIG_TIME));
-        $month_start    = date('d/m/Y', strtotime('first day of this month', _CONFIG_TIME));
-        $month_end      = date('d/m/Y', strtotime('last day of this month', _CONFIG_TIME));
-        $year_start     = date('d/m/Y', strtotime('first day of January', _CONFIG_TIME));
-        $year_end       = date('d/m/Y', strtotime('last day of December', _CONFIG_TIME));
+        $today          = date('Y/m/d', _CONFIG_TIME);
+        $week_start     = date('Y/m/d', strtotime('monday this week', _CONFIG_TIME));
+        $week_end       = date('Y/m/d 23:59:59', strtotime('sunday this week', _CONFIG_TIME));
+        $month_start    = date('Y/m/d', strtotime('first day of this month', _CONFIG_TIME));
+        $month_end      = date('Y/m/d 23:59:59', strtotime('last day of this month', _CONFIG_TIME));
+        $year_start     = date('Y/m/d', strtotime('first day of January', _CONFIG_TIME));
+        $year_end       = date('Y/m/d 23:59:59', strtotime('last day of December', _CONFIG_TIME));
 
         $admin_title    = 'Theo dõi hoạt động';
         require_once 'header.php';
@@ -306,7 +379,7 @@ switch ($act){
                         $config_pagenavi['url']         = _URL_ADMIN.'/transactions.php?'.$para_list.'&';
                         $page_start                     = ($page-1) * $config_pagenavi['page_row'];
                         $page_start                     = $page_start == 0 ? 1 : $page_start+1;
-                        $query                          = 'SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY id DESC) AS RowNumber, id,btnID, status,transID,cusID,deviceID,addr_send,timeReq,status_04 FROM '. _DB_TABLE_TRANSACTIONS .' '. $parameters_list .') AS Temp WHERE RowNumber BETWEEN '. $page_start .' AND '.($page_start + ($config_pagenavi['page_row'] - 1));
+                        $query                          = 'SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY id DESC) AS RowNumber, id,btnID, status,transID,cusID,deviceID,timeReq,status_04 FROM '. _DB_TABLE_TRANSACTIONS .' '. $parameters_list .') AS Temp WHERE RowNumber BETWEEN '. $page_start .' AND '.($page_start + ($config_pagenavi['page_row'] - 1));
                         //echo $query; exit();
                         $data                           = getGlobalAll(_DB_TABLE_TRANSACTIONS, '', array('query' => $query));
                         echo '<div class="table-responsive">';
@@ -328,14 +401,26 @@ switch ($act){
                             $deviceID   = getGlobalAll(_DB_TABLE_DEVICE, array('deviceID' => $datas['deviceID']), array('onecolum' => 'limit'));
                             $device     = getDeveloperInfo();
                             $transdetail= getButtonIDDetail();
+                            $status     = getProcessTransactions($datas['transID']);
+                            if($status == 'step_4'){
+                                $status = 'Đã hoàn tất';
+                            }else if($status == 'step_3'){
+                                $status = 'Đang đến lấy hàng';
+                            }else if($status == 'step_2'){
+                                $status = 'Điều hành đã tiếp nhận';
+                            }else if($status == 'step_1'){
+                                $status = 'Chưa xử lý';
+                            }else if($status == 'customer_delete'){
+                                $status = '<font color="red">Khách hàng đã bấm hủy</font>';
+                            }
                             echo '<tr>';
                             echo '<td><a href="'. _URL_ADMIN .'/transactions.php?act=detail&transID='. $datas['transID'] .'">'. $datas['transID'] .'</a></td>';
                             echo '<td>'. $transdetail[$datas['btnID']] .'</td>';
-                            echo '<td>'. $cusID['fullname'] .'</td>';
-                            echo '<td>'. $device[$deviceID['id']] .'</td>';
-                            echo '<td>'. $datas['addr_send'] .'</td>';
-                            echo '<td>'. $datas['timeReq'] .'</td>';
-                            echo '<td>Coming ...</td>';
+                            echo '<td><a href="'. _URL_ADMIN .'/customer.php?act=update&id='. $cusID['id'] .'">'. $cusID['fullname'] .'</a></td>';
+                            echo '<td><a href="'. _URL_ADMIN .'/device.php?act=update&id='. $deviceID['id'] .'">'. $deviceID['deviceID'] .' ('. $device[$deviceID['id']] .')</a></td>';
+                            echo '<td>'. $cusID['addr_receive'] .'</td>';
+                            echo '<td>'. getViewTime($datas['timeReq']) .'</td>';
+                            echo '<td>'.$status.'</td>';
                             echo '</tr>';
                         }
                         echo '</tbody>';

@@ -4,13 +4,13 @@ if(!$user_id){
     header('location:'._URL_HOME.'/login.php');
 }
 
-$today          = date('d/m/Y', _CONFIG_TIME);
-$week_start     = date('d/m/Y', strtotime('monday this week', _CONFIG_TIME));
-$week_end       = date('d/m/Y', strtotime('sunday this week', _CONFIG_TIME));
-$month_start    = date('d/m/Y', strtotime('first day of this month', _CONFIG_TIME));
-$month_end      = date('d/m/Y', strtotime('last day of this month', _CONFIG_TIME));
-$year_start     = date('d/m/Y', strtotime('first day of January', _CONFIG_TIME));
-$year_end       = date('d/m/Y', strtotime('last day of December', _CONFIG_TIME));
+$today          = date('Y/m/d', _CONFIG_TIME);
+$week_start     = date('Y/m/d', strtotime('monday this week', _CONFIG_TIME));
+$week_end       = date('Y/m/d 23:59:59', strtotime('sunday this week', _CONFIG_TIME));
+$month_start    = date('Y/m/d', strtotime('first day of this month', _CONFIG_TIME));
+$month_end      = date('Y/m/d 23:59:59', strtotime('last day of this month', _CONFIG_TIME));
+$year_start     = date('Y/m/d', strtotime('first day of January', _CONFIG_TIME));
+$year_end       = date('Y/m/d 23:59:59', strtotime('last day of December', _CONFIG_TIME));
 
 $admin_title = 'Trang chủ - CITYPOST';
 require_once 'header.php';
@@ -55,12 +55,12 @@ require_once 'header.php';
                                             </li>
                                             <li class="pl-2">
                                                 <h1 class="blue-grey darken-1 text-bold-400">
-                                                        <a href="<?php echo _URL_ADMIN.'/transactions.php?type=this_day_false&btnID=1';?>" class="primary">
-                                                            <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => $today, 'data' => ' AND ([status_04] <> 104 AND [status_04] <> 204) AND [btnID] = 1'));?>
-                                                        </a> |
-                                                        <a href="<?php echo _URL_ADMIN.'/transactions.php?type=this_day_false&btnID=2';?>" class="warning">
-                                                            <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => $today, 'data' => ' AND ([status_04] <> 104 AND [status_04] <> 204) AND [btnID] = 2'));?>
-                                                        </a>
+                                                    <a href="<?php echo _URL_ADMIN.'/transactions.php?type=this_day_false&btnID=1';?>" class="primary">
+                                                        <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => $today, 'data' => ' AND ([status_04] <> 104 AND [status_04] <> 204) AND [btnID] = 1'));?>
+                                                    </a> |
+                                                    <a href="<?php echo _URL_ADMIN.'/transactions.php?type=this_day_false&btnID=2';?>" class="warning">
+                                                        <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => $today, 'data' => ' AND ([status_04] <> 104 AND [status_04] <> 204) AND [btnID] = 2'));?>
+                                                    </a>
                                                 </h1>
                                                 <span class="danger darken-2"><i class="ft-chevron-down"></i> Chưa hoàn thành</span>
                                             </li>
@@ -273,29 +273,29 @@ require_once 'header.php';
                             Morris.Line({
                                 element: 'smooth-line-chart',
                                 data: [{
-                                    "day"  : "<?php echo date('d/m/Y', strtotime("-6 day", _CONFIG_TIME));?>",
-                                    "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('d/m/Y', strtotime("-6 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 1'));?>,
-                                    "Hàng"  : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('d/m/Y', strtotime("-6 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 2'));?>
+                                    "day"  : "<?php echo date('Y/m/d', strtotime("-6 day", _CONFIG_TIME));?>",
+                                    "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('Y/m/d', strtotime("-6 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 1'));?>,
+                                    "Hàng"  : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('Y/m/d', strtotime("-6 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 2'));?>
                                 }, {
-                                    "day"  : "<?php echo date('d/m/Y', strtotime("-5 day", _CONFIG_TIME));?>",
-                                    "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('d/m/Y', strtotime("-5 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 1'));?>,
-                                    "Hàng"  : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('d/m/Y', strtotime("-5 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 2'));?>
+                                    "day"  : "<?php echo date('Y/m/d', strtotime("-5 day", _CONFIG_TIME));?>",
+                                    "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('Y/m/d', strtotime("-5 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 1'));?>,
+                                    "Hàng"  : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('Y/m/d', strtotime("-5 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 2'));?>
                                 }, {
-                                    "day"  : "<?php echo date('d/m/Y', strtotime("-4 day", _CONFIG_TIME));?>",
-                                    "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('d/m/Y', strtotime("-4 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 1'));?>,
-                                    "Hàng"  : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('d/m/Y', strtotime("-4 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 2'));?>
+                                    "day"  : "<?php echo date('Y/m/d', strtotime("-4 day", _CONFIG_TIME));?>",
+                                    "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('Y/m/d', strtotime("-4 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 1'));?>,
+                                    "Hàng"  : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('Y/m/d', strtotime("-4 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 2'));?>
                                 }, {
-                                    "day"  : "<?php echo date('d/m/Y', strtotime("-3 day", _CONFIG_TIME));?>",
-                                    "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('d/m/Y', strtotime("-3 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 1'));?>,
-                                    "Hàng"  : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('d/m/Y', strtotime("-3 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 2'));?>
+                                    "day"  : "<?php echo date('Y/m/d', strtotime("-3 day", _CONFIG_TIME));?>",
+                                    "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('Y/m/d', strtotime("-3 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 1'));?>,
+                                    "Hàng"  : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('Y/m/d', strtotime("-3 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 2'));?>
                                 }, {
-                                    "day"  : "<?php echo date('d/m/Y', strtotime("-2 day", _CONFIG_TIME));?>",
-                                    "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('d/m/Y', strtotime("-2 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 1'));?>,
-                                    "Hàng"  : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('d/m/Y', strtotime("-2 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 2'));?>
+                                    "day"  : "<?php echo date('Y/m/d', strtotime("-2 day", _CONFIG_TIME));?>",
+                                    "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('Y/m/d', strtotime("-2 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 1'));?>,
+                                    "Hàng"  : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('Y/m/d', strtotime("-2 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 2'));?>
                                 }, {
-                                    "day"  : "<?php echo date('d/m/Y', strtotime("-1 day", _CONFIG_TIME));?>",
-                                    "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('d/m/Y', strtotime("-1 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 1'));?>,
-                                    "Hàng"  : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('d/m/Y', strtotime("-1 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 2'));?>
+                                    "day"  : "<?php echo date('Y/m/d', strtotime("-1 day", _CONFIG_TIME));?>",
+                                    "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('Y/m/d', strtotime("-1 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 1'));?>,
+                                    "Hàng"  : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => date('Y/m/d', strtotime("-1 day", _CONFIG_TIME)), 'data' => ' AND [btnID] = 2'));?>
                                 }, {
                                     "day"  : "<?php echo $today?>",
                                     "Thư"   : <?php echo getStaticDevice(array('type' => 'click_day_plus', 'time' => $today, 'data' => ' AND [btnID] = 1'));?>,

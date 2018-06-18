@@ -9,6 +9,6 @@ define('_DB_SERVER', 'DESKTOP-S43G0DK\SQL2008');
 define('_DB_USER', 'sa');
 define('_DB_PASS', '123456');
 define('_DB_NAME', 'citypost');
-define('_URL_HOME','http://localhost:8888/dong/citypost');
+define('_URL_HOME','http://localhost:8888/dong/citypost_cms');
 
 

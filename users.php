@@ -17,6 +17,23 @@ switch ($act){
         if(!$users){
             header('location:'._URL_ADMIN.'/users.php');
         }
+
+        if($id == 1){
+            $admin_title = 'Xóa thành viên';
+            require_once 'header.php';
+            ?>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header"><h4 class="card-title"><?php echo $admin_title;?></h4> </div>
+                        <div class="card-content text-center">Xin lỗi bạn không thể xóa thành viên này.<br /><br /></div>
+                    </div>
+                </div>
+            </div>
+            <?php
+            break;
+        }
+
         if($submit){
             if(deleteGlobal(_DB_TABLE_USERS, array('id' => $id))){
                 header('location:'._URL_ADMIN.'/users.php');

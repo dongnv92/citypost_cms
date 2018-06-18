@@ -23,11 +23,13 @@ require_once 'function.php';
 define('_CONFIG_TIME',time());
 define('_CONFIG_PAGINATION', 50); // Số bản ghi được hiển thị trên 1 trang
 define('_URL_ADMIN',_URL_HOME);
-define('_DB_TABLE_CUSTOMER', 'tblUserInfo');
+define('_DB_TABLE_CUSTOMER', 'tblCustomer');
 define('_DB_TABLE_USERS', 'tblUsers');
-define('_DB_TABLE_DEVICE', 'tblDeviceInfo');
+define('_DB_TABLE_DEVICE', 'tblDevice');
+define('_DB_TABLE_DEVICE_CONFIG', 'tblDeviceConfig');
 define('_DB_TABLE_TRANSACTIONS', 'tblTransactions');
-
+$_SESSION["back_url"] = $_SERVER["HTTP_REFERER"] ? $_SERVER["HTTP_REFERER"] : _URL_ADMIN;
+define('_DB_URL_BACK', $_SESSION["back_url"]);
 
 /** Manager Session, Cookie User */
 if ($_COOKIE['user'] && $_COOKIE['pass'])

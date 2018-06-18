@@ -105,6 +105,8 @@
                 <a href="#"><i class="ft-speaker"></i><span class="menu-title" data-i18n="nav.page_layouts.main">Quản lý thiết bị</span></a>
                 <ul class="menu-content">
                     <li <?php echo ($admin_active == 'device' && in_array($act, array('update','delete',''))) ? 'class="active"' : ''; ?>><a class="menu-item" href="<?php echo _URL_ADMIN;?>/device.php">Danh sách thiết bị</a></li>
+                    <li <?php echo ($admin_active == 'device' && in_array($act, array('active','add_customer','update_config'))) ? 'class="active"' : ''; ?>><a class="menu-item" href="<?php echo _URL_ADMIN;?>/device.php?act=active">Thiết bị đã kich hoạt</a></li>
+                    <li <?php echo ($admin_active == 'device' && in_array($act, array('realtime'))) ? 'class="active"' : ''; ?>><a class="menu-item" href="<?php echo _URL_ADMIN;?>/device.php?act=realtime">Thiết bị đang hoạt động</a></li>
                     <li <?php echo ($admin_active == 'device' && in_array($act, array('add'))) ? 'class="active"' : ''; ?>><a class="menu-item" href="<?php echo _URL_ADMIN;?>/device.php?act=add">Thêm mới</a></li>
                 </ul>
             </li>
@@ -125,11 +127,6 @@
             <li class=" nav-item">
                 <a href="<?php echo _URL_HOME.'/logout.php'?>"><i class="la la-text-height"></i>
                     <span class="menu-title">Đăng xuất</span>
-                </a>
-            </li>
-            <li class=" nav-item">
-                <a href="<?php echo _URL_HOME.'/test.php'?>"><i class="la la-text-height"></i>
-                    <span class="menu-title">Test Code</span>
                 </a>
             </li>
         </ul>
@@ -154,7 +151,7 @@
                                     echo 'Xóa khách hàng';
                                     break;
                                 default:
-                                    echo 'Danh sách khách hàng <a href="'._URL_ADMIN.'/customer.php?act=add" class="btn btn-outline-success round btn-min-width mr-1 mb-1">Thêm khách hàng</a>';
+                                    echo '<a href="'._URL_ADMIN.'/customer.php">Danh sách khách hàng</a> <a href="'._URL_ADMIN.'/customer.php?act=add" class="btn btn-outline-success round btn-min-width mr-1 mb-1">Thêm khách hàng</a>';
                                     break;
                             }
                             break;

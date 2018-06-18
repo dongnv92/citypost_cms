@@ -180,10 +180,10 @@ function getStatusDevice($text){
 
 function getStatusCustomer($text){
     switch ($text){
-        case '0':
+        case '1':
             $result = 'Đang hoạt động';
             break;
-        case '1':
+        case '0':
             $result = 'Chưa hoạt động';
             break;
     }
@@ -258,3 +258,42 @@ function pagination($config){
         return false;
     }
 }
+
+function getStatusTable($text){
+    $return = 'Không xác định';
+    if($text['table'] == _DB_TABLE_DEVICE_CONFIG){
+        switch ($text['value']){
+            case 0:
+                $return = 'Dừng hoạt động';
+                break;
+            case 1:
+                $return = 'Đang hoạt động';
+                break;
+        }
+    }
+    return $return;
+}
+
+function getViewTime($time){
+    return $time ? $time->format('H:i:s d/m/Y') : '';
+}
+
+function getProcessTransactions($tranID){
+    $trans = getGlobalAll(_DB_TABLE_TRANSACTIONS, array('transID' => $tranID), array('onecolum' => 'limit'));
+    if($trans['status_02'] != 0 && $trans['status_03'] != 0 && $trans['status_04'] != 0){
+        $status = 'step_4';
+    }else if($trans['status_02'] != 0 && $trans['status_03'] != 0 && $trans['status_04'] == 0){
+        $status = 'step_3';
+    }else if($trans['status_02'] != 0 && $trans['status_03'] == 0 && $trans['status_04'] == 0){
+        $status = 'step_2';
+    }else if($trans['status_02'] == 0 && $trans['status_03'] == 0 && $trans['status_04'] == 0){
+        $status = 'step_1';
+    }else if($trans['status_04'] == 301){
+        $status = 'customer_delete';
+    }
+    return $status;
+}
+
+/*
+ * SQL QUERY SELECT DATETIME select * from tblTransactions where CONVERT(datetime, timeReq, 103) between CONVERT(datetime, '10/06/2018 00:00:00', 104) and CONVERT(datetime, '14/6/2018 23:59:59', 104)
+ * */
