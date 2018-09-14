@@ -9,8 +9,12 @@
     </p>
 </footer>
 <!-- BEGIN VENDOR JS-->
-<script src="app-assets/vendors/js/vendors.min.js" type="text/javascript"></script>
+
 <!-- BEGIN VENDOR JS-->
+
+<script src="app-assets/js/core/libraries/jquery_ui/jquery-ui.min.js" type="text/javascript"></script>
+<script src="app-assets/js/scripts/ui/jquery-ui/autocomplete.js" type="text/javascript"></script>
+
 <!-- BEGIN PAGE VENDOR JS-->
 <script src="app-assets/vendors/js/charts/chart.min.js" type="text/javascript"></script>
 <script src="app-assets/vendors/js/charts/echarts/echarts.js" type="text/javascript"></script>
@@ -23,5 +27,10 @@
 <!-- BEGIN PAGE LEVEL JS-->
 <script src="app-assets/js/scripts/forms/wizard-steps.js" type="text/javascript"></script>
 <script src="app-assets/js/scripts/pages/dashboard-crypto.js" type="text/javascript"></script>
+<?php
+foreach ($js_plus AS $js){
+    echo '<script src="'. $js .'" type="text/javascript"></script>'."\n";
+}
+?>
 </body>
 </html>

@@ -11,6 +11,37 @@ if(!$user_id){
 }
 $admin_active   = 'transactions';
 switch ($act){
+    case 'del':
+        $tranactions = getGlobalAll(_DB_TABLE_TRANSACTIONS, array('id' => $id), array('onecolum' => 'limit'));
+        if(!$tranactions){
+            header('location:'._URL_ADMIN.'/transactions.php');
+        }
+
+        if($submit){
+            if(deleteGlobal(_DB_TABLE_TRANSACTIONS, array('id' => $id))){
+                header('location:'._URL_ADMIN.'/transactions.php');
+            }
+        }
+         $admin_title = 'Xóa giao dịch';
+         require_once 'header.php';
+         ?>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header"><h4 class="card-title"><?php echo $admin_title;?></h4> </div>
+                        <div class="card-content text-center">
+                            <form action="" method="post">
+                                Bạn có chắc muốn xóa giao dịch <strong style="color: red;"><i><?php echo $tranactions['transID'];?></i></strong> này không?
+                                <div class="form-actions text-center">
+                                    <input type="submit" name="submit" class="btn btn-outline-cyan round" value="Xóa giao dịch này" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+        break;
     case 'update':
         $tranactions = getGlobalAll(_DB_TABLE_TRANSACTIONS, array('id' => $id), array('onecolum' => 'limit'));
         if(!$tranactions){
@@ -22,14 +53,29 @@ switch ($act){
             $status_02  = (isset($_POST['status_02'])   && !empty($_POST['status_02'])) ? $_POST['status_02']   : '';
             $status_03  = (isset($_POST['status_03'])   && !empty($_POST['status_03'])) ? $_POST['status_03']   : '';
             $status_04  = (isset($_POST['status_04'])   && !empty($_POST['status_04'])) ? $_POST['status_04']   : '';
-            $data   = array(
-                'status_01'   => $status_01,
-                'status_02'   => $status_02,
-                'status_03'   => $status_03,
-                'status_04'   => $status_04
+            $status     = (isset($_POST['status'])      && !empty($_POST['status']))    ? $_POST['status']      : '';
+            $time_01    = (isset($_POST['time_01'])     && !empty($_POST['time_01']))   ? $_POST['time_01']     : '';
+            $time_02    = (isset($_POST['time_02'])     && !empty($_POST['time_02']))   ? $_POST['time_02']     : '';
+            $time_03    = (isset($_POST['time_03'])     && !empty($_POST['time_03']))   ? $_POST['time_03']     : '';
+            $time_04    = (isset($_POST['time_04'])     && !empty($_POST['time_04']))   ? $_POST['time_04']     : '';
+            $data       = array(
+                'status_01' => $status_01,
+                'status_02' => $status_02,
+                'status_03' => $status_03,
+                'status_04' => $status_04,
+                'time_01'   => $time_01,
+                'time_02'   => $time_02,
+                'time_03'   => $time_03,
+                'time_04'   => $time_04,
+                'status'    => $status
             );
             $where  = array('id' => $id);
-            updateGlobal(_DB_TABLE_TRANSACTIONS, $data, $where);
+            $error = false;
+
+            if(!updateGlobal(_DB_TABLE_TRANSACTIONS, $data, $where)){
+                $error = true;
+            }
+
             $tranactions = getGlobalAll(_DB_TABLE_TRANSACTIONS, array('id' => $id), array('onecolum' => 'limit'));
         }
 
@@ -51,27 +97,49 @@ switch ($act){
                         </div>
                     </div>
                     <div class="card-content collpase show">
-                        <?php if($submit){echo '<p class="text-center text-success">Update thành công</p>';}?>
+                        <?php if($submit && !$error){echo '<p class="text-center text-success">Update thành công</p>';}?>
+                        <?php if($submit && $error){echo '<p class="text-center text-danger">Có lỗi Update</p>';}?>
                         <form class="form form-horizontal" action="" method="post">
                             <div class="form-group row">
                                 <label class="col-md-3 label-control">Mã Status 01</label>
                                 <div class="col-md-9"><input type="text" class="form-control" placeholder="Mã Status 01" name="status_01" value="<?php echo $tranactions['status_01'];?>" /></div>
                             </div>
                             <div class="form-group row">
+                                <label class="col-md-3 label-control">Thời gian 01</label>
+                                <div class="col-md-9"><input type="text" class="form-control" placeholder="Thời gian 01" name="time_01" value="<?php echo $tranactions['time_01']->format('Y-m-d H:i:s.000');?>" /></div>
+                            </div>
+                            <div class="form-group row">
                                 <label class="col-md-3 label-control">Mã Status 02</label>
                                 <div class="col-md-9"><input type="text" class="form-control" placeholder="Mã Status 02" name="status_02" value="<?php echo $tranactions['status_02'];?>" /></div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 label-control">Thời gian 02</label>
+                                <div class="col-md-9"><input type="text" class="form-control" placeholder="Thời gian 02" name="time_02" value="<?php echo $tranactions['time_02']->format('Y-m-d H:i:s.000');?>" /></div>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-3 label-control">Mã Status 03</label>
                                 <div class="col-md-9"><input type="text" class="form-control" placeholder="Mã Status 03" name="status_03" value="<?php echo $tranactions['status_03'];?>" /></div>
                             </div>
                             <div class="form-group row">
+                                <label class="col-md-3 label-control">Thời gian 03</label>
+                                <div class="col-md-9"><input type="text" class="form-control" placeholder="Thời gian 03" name="time_03" value="<?php echo $tranactions['time_03']->format('Y-m-d H:i:s.000');?>" /></div>
+                            </div>
+                            <div class="form-group row">
                                 <label class="col-md-3 label-control">Mã Status 04</label>
                                 <div class="col-md-9"><input type="text" class="form-control" placeholder="Mã Status 04" name="status_04" value="<?php echo $tranactions['status_04'];?>" /></div>
                             </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 label-control">Thời gian 04</label>
+                                <div class="col-md-9"><input type="text" class="form-control" placeholder="Thời gian 04" name="time_04" value="<?php echo $tranactions['time_04'] ? $tranactions['time_04']->format('Y-m-d H:i:s.000') : '';?>" /></div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 label-control">Status</label>
+                                <div class="col-md-9"><input type="text" class="form-control" placeholder="Status" name="status" value="<?php echo $tranactions['status'];?>" /></div>
+                            </div>
                             <div class="form-actions text-center">
-                                <button type="button" class="btn btn-warning mr-1" onclick="javascript:location.href='<?php echo _URL_ADMIN.'/transactions.php?Act=detail&transID='.$tranactions['transID'];?>'"><i class="ft-x"></i> Quay lại</button>
-                                <input type="submit" name="submit" class="btn btn-primary" value="Cập nhập" />
+                                <a href="transactions.php?act=del&id=<?php echo $id;?>" class="btn btn-outline-danger round">Xóa</a>
+                                <button type="button" class="btn btn-outline-cyan round" onclick="javascript:location.href='<?php echo _URL_ADMIN.'/transactions.php?act=detail&transID='.$tranactions['transID'];?>'">Quay lại</button>
+                                <input type="submit" name="submit" class="btn btn-outline-cyan round" value="Cập nhập" />
                             </div>
                         </form>
                     </div>
@@ -81,12 +149,14 @@ switch ($act){
         <?php
         break;
     case 'detail':
-        $transID        = $_REQUEST['transID'];
-        $transactions   = getGlobalAll(_DB_TABLE_TRANSACTIONS, array('transID' => $transID), array('onecolum' => 'limit'));
-        $deviceID       = getGlobalAll(_DB_TABLE_DEVICE, array('deviceID' => $transactions['deviceID']), array('onecolum' => 'limit'));
-        $cusID          = getGlobalAll(_DB_TABLE_CUSTOMER, array('cusID' => $transactions['cusID']), array('onecolum' => 'limit'));
-        $device         = getDeveloperInfo();
-        $tab            = array();
+        $transID            = $_REQUEST['transID'];
+        $transactions       = getGlobalAll(_DB_TABLE_TRANSACTIONS, array('transID' => $transID), array('onecolum' => 'limit'));
+        $transactions_his   = getGlobalAll('tblTransactionHistory', array('transID' => $transID, 'status' => 1), array('onecolum' => 'limit'));
+        $post_man           = getGlobalAll('tblPostMan', array('postManID' => $transactions_his['postmanID']), array('onecolum' => 'limit'));
+        $deviceID           = getGlobalAll(_DB_TABLE_DEVICE, array('deviceID' => $transactions['deviceID']), array('onecolum' => 'limit'));
+        $cusID              = getGlobalAll(_DB_TABLE_CUSTOMER, array('cusID' => $transactions['cusID']), array('onecolum' => 'limit'));
+        $device             = getDeveloperInfo();
+        $tab                = array();
 
         if($transactions['status_02'] == 0 && $transactions['status_03'] == 0 && $transactions['status_04'] != 104){ // Nếu trường status 02, 03, 04 bằng 0
             $tab['class_1'] = 'first done current';
@@ -127,6 +197,10 @@ switch ($act){
         }
         if($transactions['status_04'] == 301){
             $tab['text_04'] = '<strong class="danger">Khách hàng đã bấm hủy</strong>';
+            $tab['text_4']  = getViewTime($transactions['time_04']);
+        }
+        else if($transactions['status_04'] == 106){
+            $tab['text_04'] = '<strong class="danger">Điều hành hủy tin</strong>';
             $tab['text_4']  = getViewTime($transactions['time_04']);
         }
 
@@ -172,7 +246,7 @@ switch ($act){
                                 <tbody>
                                     <tr class="bg-blue bg-lighten-5">
                                         <td class="primary">Mã giao dịch</td>
-                                        <td><?php echo $transactions['transID'];?></td>
+                                        <td><?php echo $transactions['transID'];?> <a href="<?php echo _URL_ADMIN.'/transactions.php?act=update&id='.$transactions['id'];?>">Chỉnh sửa</a></td>
                                     </tr>
                                     <tr class="bg-blue bg-lighten-5">
                                         <td class="primary">Mã thiết bị</td>
@@ -187,8 +261,20 @@ switch ($act){
                                         <td><?php echo $cusID['addr_receive'];?></td>
                                     </tr>
                                     <tr class="bg-blue bg-lighten-5">
-                                        <td class="primary"></td>
-                                        <td><a href="<?php echo _URL_ADMIN.'/transactions.php?act=update&id='.$transactions['id'];?>">Chỉnh sửa</a></td>
+                                        <td class="primary">Bộ phận</td>
+                                        <td><?php echo $post_man['deparmentName'];?></td>
+                                    </tr>
+                                    <tr class="bg-blue bg-lighten-5">
+                                        <td class="primary">Tên Bưu Tá</td>
+                                        <td><?php echo $post_man['postManName'];?></td>
+                                    </tr>
+                                    <tr class="bg-blue bg-lighten-5">
+                                        <td class="primary">Bưu cục</td>
+                                        <td><?php echo $post_man['POName'];?></td>
+                                    </tr>
+                                    <tr class="bg-blue bg-lighten-5">
+                                        <td class="primary">Số điện thoại</td>
+                                        <td><?php echo $post_man['POPhone'];?></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -207,7 +293,8 @@ switch ($act){
         $month_end      = date('Y/m/d 23:59:59', strtotime('last day of this month', _CONFIG_TIME));
         $year_start     = date('Y/m/d', strtotime('first day of January', _CONFIG_TIME));
         $year_end       = date('Y/m/d 23:59:59', strtotime('last day of December', _CONFIG_TIME));
-
+        $css_plus       = array('//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css');
+        $js_plus        = array('https://code.jquery.com/ui/1.12.1/jquery-ui.js', 'app-assets/js/combobox.js');
         $admin_title    = 'Theo dõi hoạt động';
         require_once 'header.php';
         ?>
@@ -258,27 +345,6 @@ switch ($act){
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-control round" name="cusID">
-                                <?php
-                                $form_customer = getGlobalAll(_DB_TABLE_CUSTOMER, '');
-                                if($_GET['cusID']) {
-                                    echo '<option value="'. $_GET['cusID'] .'">'. getGlobalAll(_DB_TABLE_CUSTOMER, array('cusID' => $_GET['cusID']), array('onecolum' => 'fullname')) .'</option>';
-                                    foreach ($form_customer AS $form_customers) {
-                                        if($form_customers['cusID'] != $_GET['cusID']){
-                                            echo '<option value="' . $form_customers['cusID'] . '">' . $form_customers['fullname'] . '</option>';
-                                        }
-                                    }
-                                    echo '<option value="">Tất cả</option>';
-                                }else{
-                                    echo '<option value="">Khách hàng</option>';
-                                    foreach ($form_customer AS $form_customers) {
-                                        echo '<option value="' . $form_customers['cusID'] . '">' . $form_customers['fullname'] . '</option>';
-                                    }
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
                             <select class="form-control round" name="type">
                                 <?php
                                 if($type){
@@ -320,9 +386,33 @@ switch ($act){
                             <input type="submit" value="Tìm kiếm" class="btn btn-outline-primary round btn-min-width mr-1 mb-1">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col">
+                            <select class="form-control round ac-combobox" name="cusID">
+                                <?php
+                                $form_customer = getGlobalAll(_DB_TABLE_CUSTOMER, '', array('query' => 'SELECT DISTINCT [cusID] FROM '. _DB_TABLE_TRANSACTIONS .';'));
+                                if($_GET['cusID']) {
+                                    echo '<option value="'. $_GET['cusID'] .'">'. getGlobalAll(_DB_TABLE_CUSTOMER, array('cusID' => $_GET['cusID']), array('onecolum' => 'fullname')) .'</option>';
+                                    foreach ($form_customer AS $form_customers) {
+                                        if($form_customers['cusID'] != $_GET['cusID']){
+                                            echo '<option value="' . $form_customers['cusID'] . '">'. getGlobalAll(_DB_TABLE_CUSTOMER, array('cusID' => $form_customers['cusID']), array('onecolum' => 'fullname')) .'</option>';
+                                        }
+                                    }
+                                    echo '<option value="">Tất cả</option>';
+                                }else{
+                                    echo '<option value="">Khách hàng</option>';
+                                    foreach ($form_customer AS $form_customers) {
+                                        echo '<option value="' . $form_customers['cusID'] . '">'. getGlobalAll(_DB_TABLE_CUSTOMER, array('cusID' => $form_customers['cusID']), array('onecolum' => 'fullname')) .'</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
                 </form>
                 <hr />
                 <div class="card">
+                    <div class="card-body">
                         <?php
                         $para = array('btnID', 'deviceID','status_04','cusID');
                         foreach ($para AS $paras){
@@ -382,6 +472,7 @@ switch ($act){
                         $query                          = 'SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY id DESC) AS RowNumber, id,btnID, status,transID,cusID,deviceID,timeReq,status_04 FROM '. _DB_TABLE_TRANSACTIONS .' '. $parameters_list .') AS Temp WHERE RowNumber BETWEEN '. $page_start .' AND '.($page_start + ($config_pagenavi['page_row'] - 1));
                         //echo $query; exit();
                         $data                           = getGlobalAll(_DB_TABLE_TRANSACTIONS, '', array('query' => $query));
+                        echo '<p class="text-right"><nav aria-label="Page navigation">'.pagination($config_pagenavi).'</nav></p>';
                         echo '<div class="table-responsive">';
                         echo '<table class="table">';
                         echo '<thread>';
@@ -412,12 +503,14 @@ switch ($act){
                                 $status = 'Chưa xử lý';
                             }else if($status == 'customer_delete'){
                                 $status = '<font color="red">Khách hàng đã bấm hủy</font>';
+                            }else if($status == 'dieuhanh_cance'){
+                                $status = '<font color="red">Điều hành hủy tin</font>';
                             }
                             echo '<tr>';
                             echo '<td><a href="'. _URL_ADMIN .'/transactions.php?act=detail&transID='. $datas['transID'] .'">'. $datas['transID'] .'</a></td>';
                             echo '<td>'. $transdetail[$datas['btnID']] .'</td>';
                             echo '<td><a href="'. _URL_ADMIN .'/customer.php?act=update&id='. $cusID['id'] .'">'. $cusID['fullname'] .'</a></td>';
-                            echo '<td><a href="'. _URL_ADMIN .'/device.php?act=update&id='. $deviceID['id'] .'">'. $deviceID['deviceID'] .' ('. $device[$deviceID['id']] .')</a></td>';
+                            echo '<td><a href="'. _URL_ADMIN .'/device.php?act=update&id='. $deviceID['id'] .'">'. $deviceID['deviceID'] .' ('. $device[$deviceID['fullname']] .')</a></td>';
                             echo '<td>'. $cusID['addr_receive'] .'</td>';
                             echo '<td>'. getViewTime($datas['timeReq']) .'</td>';
                             echo '<td>'.$status.'</td>';
@@ -431,6 +524,7 @@ switch ($act){
                     </div>
                 </div>
             </div>
+        </div>
         </div>
         <?php
         break;

@@ -64,6 +64,7 @@ switch ($act){
                         echo '<thread>';
                         echo '<tr>';
                         echo '<th>Mã thiết bị</th>';
+                        echo '<th>Số điện thoại đang sử dụng</th>';
                         echo '<th>Tên khách hàng</th>';
                         echo '<th>URL API</th>';
                         echo '<th>Thời gian gửi data</th>';
@@ -78,6 +79,7 @@ switch ($act){
                             $developer  = getDeveloperInfo();
                             echo '<tr>';
                             echo '<td><a href="'. _URL_ADMIN .'/device.php?act=update_config&id='. $devices['id'] .'">'. $devices['deviceID'] .'</a> <a href="'. _URL_ADMIN .'/device.php?act=update&id='. $devices['id'] .'">('. $developer[$device['fullname']] .')</a></td>';
+                            echo '<td>'. $device['code_phone'] .'</td>';
                             echo '<td><a href="'. _URL_ADMIN .'/customer.php?act=update&id='. $customer['id'] .'">'. $customer['fullname'] .'</a></td>';
                             echo '<td>'. $devices['url_api'] .'</td>';
                             echo '<td>'. $devices['timeReq'] .'</td>';
@@ -151,7 +153,13 @@ switch ($act){
                                     <div class="form-group row">
                                         <label class="col-md-3 label-control">Nhập một thiết bị</label>
                                         <div class="col-md-9">
-                                            <input type="text" class="form-control" required placeholder="Nhập mã một thiết bị" name="device_id" value="<?php echo $device_id;?>">
+                                            <select name="device_id" class="form-control round">
+                                                    <?php
+                                                    foreach (getGlobalAll(_DB_TABLE_DEVICE, '') AS $select_device){
+                                                        echo '<option value="'. $select_device['deviceID'] .'">'. $select_device['deviceID'] .'</option>';
+                                                    }
+                                                    ?>
+                                                </select>
                                             <?php echo ($error['device_id']) ? '<small style="color: red"><i>'. $error['device_id'] .'</i></small>' : '';?>
                                         </div>
                                     </div>
@@ -230,6 +238,7 @@ switch ($act){
             $device_code    = (isset($_POST['device_code'])     && !empty($_POST['device_code']))   ? $_POST['device_code']     : '';
             $device_name    = (isset($_POST['device_name'])     && !empty($_POST['device_name']))   ? $_POST['device_name']     : '';
             $device_phone   = (isset($_POST['device_phone'])    && !empty($_POST['device_phone']))  ? $_POST['device_phone']    : '';
+            $code_phone     = (isset($_POST['code_phone'])      && !empty($_POST['code_phone']))    ? $_POST['code_phone']      : '';
             $device_email   = (isset($_POST['device_email'])    && !empty($_POST['device_email']))  ? $_POST['device_email']    : '';
             $device_status  = (isset($_POST['device_status'])   && !empty($_POST['device_status'])) ? $_POST['device_status']   : '';
             $error          = array();
@@ -240,23 +249,20 @@ switch ($act){
             if(($device_code != $device['deviceID']) && checkGlobal(_DB_TABLE_DEVICE, array('deviceID' => $device_code)) > 0){
                 $error['device_code'] = 'Mã thiết bị này đã tồn tại';
             }
+            if(($code_phone && $code_phone != $device['code_phone']) && checkGlobal(_DB_TABLE_DEVICE, array('code_phone' => $code_phone)) > 0){
+                $error['code_phone'] = 'Số điện thoại này đã tồn tại';
+            }
             if(!$device_name){
                 $error['device_name'] = 'Bạn chưa nhập tên thiết bị';
             }
             if(!$device_email){
                 $error['device_email'] = 'Bạn chưa nhập Emai';
             }
-            if(($device_email != $device['mail']) && checkGlobal(_DB_TABLE_DEVICE, array('mail' => $device_email)) > 0){
-                $error['device_email'] = 'Email này đã tồn tại';
-            }
             if(!filter_var($device_email, FILTER_VALIDATE_EMAIL)){
                 $error['device_email'] = 'Email chưa đúng định dạng';
             }
             if(!$device_phone){
                 $error['device_phone'] = 'Bạn chưa nhập số điện thoại';
-            }
-            if(($device_phone != $device['phone']) && checkGlobal(_DB_TABLE_DEVICE, array('phone' => $device_phone)) > 0){
-                $error['device_phone'] = 'Số điện thoại này đã tồn tại';
             }
 
             if(!$error){
@@ -265,6 +271,7 @@ switch ($act){
                     'fullname'    => $device_name,
                     'mail'        => $device_email,
                     'phone'       => $device_phone,
+                    'code_phone'  => $code_phone,
                     'status'      => $device_status
                 );
                 $where  = array('id' => $id);
@@ -313,7 +320,7 @@ switch ($act){
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-md-3 label-control">Thiết bị phát triể bởi</label>
+                                            <label class="col-md-3 label-control">Thiết bị phát triển bởi</label>
                                             <div class="col-md-9">
                                                 <select name="device_name" class="form-control">
                                                     <?php
@@ -335,10 +342,17 @@ switch ($act){
                                             </div>
                                         </div>
                                         <div class="form-group row">
+                                            <label class="col-md-3 label-control">Số điện thoại liên hệ</label>
+                                            <div class="col-md-9">
+                                                <input type="text" class="form-control" required placeholder="Số điện thoại liên hệ" name="device_phone" value="<?php echo $device['phone'];?>">
+                                                <?php echo ($error['device_phone']) ? '<small style="color: red"><i>'. $error['device_phone'] .'</i></small>' : '';?>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
                                             <label class="col-md-3 label-control">Số điện thoại thiết bị</label>
                                             <div class="col-md-9">
-                                                <input type="text" class="form-control" required placeholder="Số điện thoại người phát triển" name="device_phone" value="<?php echo $device['phone'];?>">
-                                                <?php echo ($error['device_phone']) ? '<small style="color: red"><i>'. $error['device_phone'] .'</i></small>' : '';?>
+                                                <input type="text" class="form-control" placeholder="Số điện thoại thiết bị" name="code_phone" value="<?php echo $device['code_phone'];?>">
+                                                <?php echo ($error['code_phone']) ? '<small style="color: red"><i>'. $error['code_phone'] .'</i></small>' : '';?>
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -486,6 +500,7 @@ switch ($act){
             $device_code    = (isset($_POST['device_code'])     && !empty($_POST['device_code']))   ? $_POST['device_code']     : '';
             $device_name    = (isset($_POST['device_name'])     && !empty($_POST['device_name']))   ? $_POST['device_name']     : '';
             $device_phone   = (isset($_POST['device_phone'])    && !empty($_POST['device_phone']))  ? $_POST['device_phone']    : '';
+            $code_phone     = (isset($_POST['code_phone'])      && !empty($_POST['code_phone']))    ? $_POST['code_phone']      : '';
             $device_email   = (isset($_POST['device_email'])    && !empty($_POST['device_email']))  ? $_POST['device_email']    : '';
             $error          = array();
             if(!$device_code){
@@ -500,22 +515,22 @@ switch ($act){
             if(!$device_email){
                 $error['device_email'] = 'Bạn chưa nhập Emai';
             }
-            if(checkGlobal(_DB_TABLE_DEVICE, array('mail' => $device_email)) > 0){
-                $error['device_email'] = 'Email này đã tồn tại';
-            }
+            //if(checkGlobal(_DB_TABLE_DEVICE, array('mail' => $device_email)) > 0){
+            //    $error['device_email'] = 'Email này đã tồn tại';
+            //}
             if(!filter_var($device_email, FILTER_VALIDATE_EMAIL)){
-                $error['device_email'] = 'Email chưa đúng định dạng';
+                $error['device_email']  = 'Email chưa đúng định dạng';
             }
             if(!$device_phone){
-                $error['device_phone'] = 'Bạn chưa nhập số điện thoại';
+                $error['device_phone']  = 'Bạn chưa nhập số điện thoại';
             }
-            if(checkGlobal(_DB_TABLE_DEVICE, array('phone' => $device_phone)) > 0){
-                $error['device_phone'] = 'Số điện thoại này đã tồn tại';
+            if($code_phone && checkGlobal(_DB_TABLE_DEVICE, array('code_phone' => $code_phone)) > 0){
+                $error['code_phone'] = 'Số điện thoại này đã tồn tại';
             }
 
             if(!$error){
-                $colum  = array('[deviceID]','[fullname]','[mail]','[phone]','[status]');
-                $data   = array("'$device_code'", "N'$device_name'", "'$device_email'", "'$device_phone'", 0);
+                $colum  = array('[deviceID]','[fullname]', '[code_phone]' ,'[mail]','[phone]','[status]');
+                $data   = array("'$device_code'", "N'$device_name'", "N'$code_phone'" , "'$device_email'", "'$device_phone'", 0);
                 if(insertSqlserver(_DB_TABLE_DEVICE, $colum, $data)){
                     header('location:'._URL_ADMIN.'/device.php');
                 }
@@ -573,10 +588,17 @@ switch ($act){
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-md-3 label-control">Số điện thoại</label>
+                                            <label class="col-md-3 label-control">Số điện thoại liên hệ</label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" required placeholder="Số điện thoại người phát triển" name="device_phone" value="<?php echo $device_phone;?>">
                                                 <?php echo ($error['device_phone']) ? '<small style="color: red"><i>'. $error['device_phone'] .'</i></small>' : '';?>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-3 label-control">Số điện thoại thiết bị</label>
+                                            <div class="col-md-9">
+                                                <input type="text" class="form-control" placeholder="Số điện thoại thiết bị" name="code_phone" value="<?php echo $code_phone;?>">
+                                                <?php echo ($error['code_phone']) ? '<small style="color: red"><i>'. $error['code_phone'] .'</i></small>' : '';?>
                                             </div>
                                         </div>
                                     </div>
@@ -640,16 +662,17 @@ switch ($act){
                         $config_pagenavi['url']         = _URL_ADMIN.'/device.php?';
                         $page_start                     = ($page-1) * $config_pagenavi['page_row'];
                         $page_start                     = $page_start == 0 ? 1 : $page_start+1;
-                        $query                          = 'SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY id DESC) AS RowNumber,id,deviceID,fullname,phone,mail,timeReg,status FROM '. _DB_TABLE_DEVICE.' '. $parameters_list .') AS Temp WHERE RowNumber BETWEEN '. $page_start .' AND '.($page_start + ($config_pagenavi['page_row'] - 1));
+                        $query                          = 'SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY id DESC) AS RowNumber,id,deviceID,fullname,code_phone,phone,mail,timeReg,status FROM '. _DB_TABLE_DEVICE.' '. $parameters_list .') AS Temp WHERE RowNumber BETWEEN '. $page_start .' AND '.($page_start + ($config_pagenavi['page_row'] - 1));
                         $data                           = getGlobalAll(_DB_TABLE_DEVICE, '', array('query' => $query));
                         echo '<div class="table-responsive">';
                         echo '<table class="table">';
                         echo '<thread>';
                         echo '<tr>';
-                        echo '<th>Mã thiết bị</th>';
+                        echo '<th>Thiết bị</th>';
                         echo '<th>Người phát triển</th>';
                         echo '<th>Email</th>';
-                        echo '<th>Số điện thoại</th>';
+                        echo '<th>Liên Hệ</th>';
+                        echo '<th>Số thiết bị</th>';
                         echo '<th>Trạng thái</th>';
                         echo '</tr>';
                         echo '</thread>';
@@ -666,6 +689,7 @@ switch ($act){
                             echo '<td>'. $developer[$devices['fullname']] .'</td>';
                             echo '<td>'. $devices['mail'] .'</td>';
                             echo '<td>'. $devices['phone'] .'</td>';
+                            echo '<td>'. $devices['code_phone'] .'</td>';
                             echo '<td>'. $status .'</td>';
                             echo '</tr>';
                         }

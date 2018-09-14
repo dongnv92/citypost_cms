@@ -97,10 +97,10 @@ require_once 'header.php';
                                             <li class="pl-2">
                                                 <h1 class="blue-grey darken-1 text-bold-400">
                                                     <a href="<?php echo _URL_ADMIN.'/transactions.php?type=this_week_false&btnID=1';?>" class="primary">
-                                                        <?php echo getStaticDevice(array('type' => 'between_plus', 'time_start' => $week_start, 'time_end' => $week_end, 'data' => 'AND ([status_04] <> 104 AND [status_04] <> 204) AND [btnID] = 1'))?></strong>
+                                                        <?php echo getStaticDevice(array('type' => 'between_plus', 'time_start' => $week_start, 'time_end' => $week_end, 'data' => 'AND [status_04] != 104 AND [btnID] = 1'))?></strong>
                                                     </a> |
                                                     <a href="<?php echo _URL_ADMIN.'/transactions.php?type=this_week_false&btnID=2';?>" class="warning">
-                                                        <?php echo getStaticDevice(array('type' => 'between_plus', 'time_start' => $week_start, 'time_end' => $week_end, 'data' => 'AND ([status_04] <> 104 AND [status_04] <> 204) AND [btnID] = 2'))?></strong>
+                                                        <?php echo getStaticDevice(array('type' => 'between_plus', 'time_start' => $week_start, 'time_end' => $week_end, 'data' => 'AND [status_04] != 104 AND [btnID] = 2'))?></strong>
                                                     </a>
                                                 </h1>
                                                 <span class="danger darken-2"><i class="ft-chevron-down"></i> Chưa hoàn thành</span>

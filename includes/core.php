@@ -28,6 +28,7 @@ define('_DB_TABLE_USERS', 'tblUsers');
 define('_DB_TABLE_DEVICE', 'tblDevice');
 define('_DB_TABLE_DEVICE_CONFIG', 'tblDeviceConfig');
 define('_DB_TABLE_TRANSACTIONS', 'tblTransactions');
+define('_DB_TABLE_POSTMAN', 'tblPostMan');
 $_SESSION["back_url"] = $_SERVER["HTTP_REFERER"] ? $_SERVER["HTTP_REFERER"] : _URL_ADMIN;
 define('_DB_URL_BACK', $_SESSION["back_url"]);
 

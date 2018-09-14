@@ -5,6 +5,97 @@
  * Date: 04/06/2018
  * Time: 15:34
  */
+ 
+ /*-------------------Start functuon by Mr Phu----------------------------*/ 
+function GetDataByID($field,$query){
+    $result = "";
+    global $connection;
+    if(!$query){
+        return false;
+    }
+    else{
+        $re  = sqlsrv_query($connection, $query);
+        // Debug
+        if($re == FALSE){
+
+            die('error: '.FormatErrors(sqlsrv_errors($connection)));
+        }else{
+            while ($rw = sqlsrv_fetch_object($re)){
+                $result = $rw->$field;
+            }
+        }
+
+    }
+    return $result;
+
+}
+function GetMethoByTransID($transID){
+    $method = "";
+    global $connection;
+    if(!$transID){
+        return false;
+    }
+    else{
+        $query  = "SELECT * FROM tblSMSReceive WHERE transID='$transID'";
+        //echo $query;
+        $re  = sqlsrv_query($connection, $query);
+        // Debug
+        if($re == FALSE){
+
+            die('error: '.FormatErrors(sqlsrv_errors($connection)));
+        }else{
+            while ($rw = sqlsrv_fetch_object($re)){
+                $method = $rw->method;
+            }
+        }
+
+    }
+    return $method;
+}
+function InsertData($table, $colum, $data){
+    global $connection;
+    if (!$table || !$data || !$colum) {
+        return false;
+    } else {
+        $query  = "INSERT INTO $table($colum) VALUES($data)";
+        $query  = sqlsrv_query($connection, $query);
+        // Debug
+        if($query == FALSE){
+
+            die('error: '.FormatErrors(sqlsrv_errors($connection)));
+        }else{
+            return true;
+        }
+    }
+
+}
+function updateDataByVar($var,$table,$where)
+{
+    global $connection;
+
+    $result = '';
+    $query = "UPDATE $table SET $var WHERE $where";
+    //echo  $query;
+    $cmd = sqlsrv_query($connection, $query);
+
+    if ($cmd == false) {
+        $result = 'Loi truy van.';
+        die(print_r(sqlsrv_errors(), true));
+    } else {
+        $result = 1;
+    }
+    sqlsrv_close($connection);
+    return $result;
+
+}
+function getTime(){
+    date_default_timezone_set('Asia/Ho_Chi_Minh');
+    $datetime = new DateTime();
+    $time =  $datetime ->getTimestamp();
+    $timeReq = date('Y/m/d H:i:s',$time);
+    return $timeReq;
+}
+ /*-------------------End functuon by Mr Phu----------------------------*/
 
 function insertSqlserver($table, $colum, $data){
     global $connection;
@@ -218,7 +309,8 @@ function getDeveloperInfo(){
     return array(
         '1' => 'Nguyễn Hiếu',
         '2' => 'Nguyễn Bình',
-        '3' => 'Nguyễn Dương'
+        '3' => 'Nguyễn Dương',
+        '4' => 'AMAZON BUTTON'
     );
 }
 function getButtonIDDetail(){
@@ -290,6 +382,8 @@ function getProcessTransactions($tranID){
         $status = 'step_1';
     }else if($trans['status_04'] == 301){
         $status = 'customer_delete';
+    }else if($trans['status_04'] == 106){
+        $status = 'dieuhanh_cance'; // điều hành hủy đơn
     }
     return $status;
 }

@@ -260,19 +260,6 @@ switch ($act){
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-md-3 label-control">Mã thiết bị sử dụng</label>
-                                            <div class="col-md-9">
-                                                <select name="customer_device" class="form-control round">
-                                                    <?php
-                                                    foreach (getGlobalAll(_DB_TABLE_DEVICE, '') AS $select_device){
-                                                        echo '<option value="'. $select_device['deviceID'] .'">'. $select_device['deviceID'] .'</option>';
-                                                    }
-                                                    ?>
-                                                </select>
-                                                <?php echo ($error['customer_device']) ? '<small style="color: red"><i>'. $error['customer_device'] .'</i></small>' : '';?>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
                                             <label class="col-md-3 label-control">Tên khách hàng</label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" required placeholder="Tên khách hàng" name="customer_name" value="<?php echo $customer_name;?>" />
@@ -329,7 +316,22 @@ switch ($act){
             <div class="row">
                 <div class="col text-lg-left">
                     <div class="search-input open">
-                        <input class="input form-control round" type="text" value="<?php echo $_REQUEST['fullname'] ? $_REQUEST['fullname'] : '';?>" name="fullname" placeholder="Nhập tên khách hàng để tìm kiếm ...">
+                        <input class="input form-control round" type="text" value="<?php echo $_REQUEST['fullname'] ? $_REQUEST['fullname'] : '';?>" name="fullname" placeholder="Tên khách hàng">
+                    </div>
+                </div>
+                <div class="col text-lg-left">
+                    <div class="search-input open">
+                        <input class="input form-control round" type="text" value="<?php echo $_REQUEST['phone_company'] ? $_REQUEST['phone_company'] : '';?>" name="phone_company" placeholder="Số điện thoại">
+                    </div>
+                </div>
+                <div class="col text-lg-left">
+                    <div class="search-input open">
+                        <input class="input form-control round" type="text" value="<?php echo $_REQUEST['addr_receive'] ? $_REQUEST['addr_receive'] : '';?>" name="addr_receive" placeholder="Địa chỉ">
+                    </div>
+                </div>
+                <div class="col text-lg-left">
+                    <div class="search-input open">
+                        <input class="input form-control round" type="text" value="<?php echo $_REQUEST['mail'] ? $_REQUEST['mail'] : '';?>" name="mail" placeholder="Email">
                     </div>
                 </div>
                 <div class="col  text-lg-right">
@@ -355,7 +357,7 @@ switch ($act){
                     <div class="card-content collpase show">
                         <!-- Pagination -->
                         <?php
-                        $para = array('fullname');
+                        $para = array('fullname','phone_company','addr_receive','mail');
                         foreach ($para AS $paras){
                             if(isset($_REQUEST[$paras]) && !empty($_REQUEST[$paras])){
                                 $parameters[$paras] = $_REQUEST[$paras];
@@ -388,6 +390,7 @@ switch ($act){
                         $query                          = 'SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY cusID DESC) AS RowNumber,id,cusID,addr_receive,fullname,mail,phone,phone_company,timeReg,status FROM '. _DB_TABLE_CUSTOMER .' '. $parameters_list .') AS Temp WHERE RowNumber BETWEEN '. $page_start .' AND '.($page_start + ($config_pagenavi['page_row'] - 1));
                         //echo $query; exit();
                         $data                           = getGlobalAll(_DB_TABLE_CUSTOMER, '', array('query' => $query));
+                        echo '<div class="text-right"><nav aria-label="Page navigation">'.pagination($config_pagenavi).'</nav></div>';
                         echo '<div class="table-responsive">';
                         echo '<table class="table">';
                         echo '<thread>';

@@ -23,21 +23,34 @@
     <!-- END VENDOR CSS-->
     <!-- BEGIN MODERN CSS-->
     <link rel="stylesheet" type="text/css" href="app-assets/css/app.css">
-    <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/tables/datatable/datatables.min.css">
+    <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/ui/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="app-assets/css/plugins/ui/jqueryui.css">
     <!-- END MODERN CSS-->
     <!-- BEGIN Page Level CSS-->
+    <script src="app-assets/vendors/js/vendors.min.js" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="app-assets/css/core/menu/menu-types/vertical-menu.css">
     <link rel="stylesheet" type="text/css" href="app-assets/css/core/colors/palette-gradient.css">
     <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/cryptocoins/cryptocoins.css">
     <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/charts/morris.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="app-assets/vendors/js/charts/raphael-min.js" type="text/javascript"></script>
     <script src="app-assets/vendors/js/charts/morris.min.js" type="text/javascript"></script>
-
+	<script src="jquery/sweetalert.min.js" type="text/javascript"></script>
+    <?php
+    foreach ($css_plus AS $css){
+        echo '<link rel="stylesheet" type="text/css" href="'. $css .'">'."\n";
+    }
+    ?>
     <!-- END Page Level CSS-->
+    <style>
+        #map {
+            height: 100%;
+            float: left;
+            width: 70%;
+            height: 100%;
+        }
+    </style>
     <!-- BEGIN Custom CSS-->
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-    <!-- END Custom CSS-->
+
 </head>
 <body class="vertical-layout vertical-menu 2-columns   menu-expanded fixed-navbar"
       data-open="click" data-menu="vertical-menu" data-col="2-columns">
@@ -123,6 +136,30 @@
                     <li <?php echo ($admin_active == 'users' && in_array($act, array('update','delete',''))) ? 'class="active"' : ''; ?>><a class="menu-item" href="<?php echo _URL_ADMIN;?>/users.php">Danh sách thành viên</a></li>
                     <li <?php echo ($admin_active == 'users' && in_array($act, array('add'))) ? 'class="active"' : ''; ?>><a class="menu-item" href="<?php echo _URL_ADMIN;?>/users.php?act=add">Thêm thành viên</a></li>
                 </ul>
+            </li>
+            <li class=" nav-item">
+                <a href="<?php echo _URL_HOME.'/buuta.php'?>"><i class="la la-user-secret"></i>
+                    <span class="menu-title">Danh sách bưu tá</span>
+                </a>
+            </li>
+            <li class=" nav-item">
+                <a href="#"><i class="la la-code-fork"></i><span class="menu-title" data-i18n="nav.page_layouts.main">Nhập liệu</span></a>
+                <ul class="menu-content">
+                    <li <?php echo ($admin_active == 'sms' && in_array($act, array(''))) ? 'class="active"' : ''; ?>><a class="menu-item" href="<?php echo _URL_ADMIN;?>/sms.php">Danh sách</a></li>
+                    <li <?php echo ($admin_active == 'input' && in_array($act, array(''))) ? 'class="active"' : ''; ?>><a class="menu-item" href="<?php echo _URL_ADMIN;?>/input.php">Thêm nội dung gửi lên</a></li>
+                </ul>
+            </li>
+            <li class=" nav-item">
+                <a href="#"><i class="la la-map-marker"></i><span class="menu-title" data-i18n="nav.page_layouts.main">Google Maps</span></a>
+                <ul class="menu-content">
+                    <li <?php echo ($admin_active == 'googlemap' && in_array($act, array(''))) ? 'class="active"' : ''; ?>><a class="menu-item" href="<?php echo _URL_ADMIN;?>/googlemap.php">Chỉ đường</a></li>
+                    <li <?php echo ($admin_active == 'googlemap' && in_array($act, array('add'))) ? 'class="active"' : ''; ?>><a class="menu-item" href="<?php echo _URL_ADMIN;?>/googlemap.php?act=add">Thêm địa chỉ</a></li>
+                </ul>
+            </li>
+            <li class=" nav-item">
+                <a href="<?php echo _URL_HOME.'/iotbutton.php'?>"><i class="la la-cc-diners-club"></i>
+                    <span class="menu-title">IOT BUTTON AMAZON</span>
+                </a>
             </li>
             <li class=" nav-item">
                 <a href="<?php echo _URL_HOME.'/logout.php'?>"><i class="la la-text-height"></i>
