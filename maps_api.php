@@ -659,5 +659,5 @@ if(count($json) > 23) {
     </script>
     </body>
     </html>
-<?php
+    <?php
 }
