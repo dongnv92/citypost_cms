@@ -122,7 +122,7 @@ switch ($act){
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-3 label-control">Thời gian 03</label>
-                                <div class="col-md-9"><input type="text" class="form-control" placeholder="Thời gian 03" name="time_03" value="<?php echo $tranactions['time_03']->format('Y-m-d H:i:s.000');?>" /></div>
+                                <div class="col-md-9"><input type="text" class="form-control" placeholder="Thời gian 03" name="time_03" value="<?php echo $tranactions['time_03'] ? $tranactions['time_03']->format('Y-m-d H:i:s.000') : '';?>" /></div>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-3 label-control">Mã Status 04</label>

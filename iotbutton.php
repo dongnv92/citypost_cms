@@ -21,13 +21,17 @@ switch ($act){
                 //echo $check_data; exit();
                 // Thực thi insert vào API
 				if($type == 1 || $type == 2){
-					if($check_data == 0){
+					// Check, Đang có giao dịch thì không insert nữa
+				    /*if($check_data == 0){
 						$url_fetch = "http://112.78.11.14:8080/index.php?method=sendMSG&deviceId=$seri&prodID=1&typeID=$type&deviceStatus=101";
 						$url_email = file_get_contents("http://112.78.11.14/send_email.php?seri=$seri&type=$type");
 						echo json_encode(array('type' => 'send', 'button' => $type, 'status' => 'ok', 'fetch' => file_get_contents($url_fetch)));
 					}else{
 						echo json_encode(array('Error' => 'Error: Existing transactions, Do not Isert To Database'));		
-					}
+					}*/
+                    $url_fetch = "http://112.78.11.14:8080/index.php?method=sendMSG&deviceId=$seri&prodID=1&typeID=$type&deviceStatus=101";
+                    $url_email = file_get_contents("http://112.78.11.14/send_email.php?seri=$seri&type=$type");
+                    echo json_encode(array('type' => 'send', 'button' => $type, 'status' => 'ok', 'fetch' => file_get_contents($url_fetch)));
 				}else if($type == 3){
                     if((checkGlobal(_DB_TABLE_TRANSACTIONS, array('deviceID' => $seri, 'btnID' => '1', 'status' => 0)) + checkGlobal(_DB_TABLE_TRANSACTIONS, array('deviceID' => $seri, 'btnID' => '2', 'status' => 0))) > 0){
                         $url_fetch      = file_get_contents("http://112.78.11.14:8080/index.php?method=sendMSG&deviceId=$seri&prodID=1&typeID=1&deviceStatus=301");
