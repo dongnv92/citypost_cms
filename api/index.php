@@ -1,9 +1,21 @@
 <?php
 error_reporting(0);
+
+$token = isset($_GET['token']) ? $_GET['token'] : false;
+if(!$token){
+    echo json_encode(array('response' => 400, 'message' => 'Missing Token'));
+    exit();
+}
+
+if(!checkToken($token)){
+    echo json_encode(array('response' => 203, 'message' => 'Wrong Token. Please try again'));
+    exit();
+}
+
 date_default_timezone_set('Asia/Ho_Chi_Minh');
-define('_DB_SERVER', 'WIN-T2JRC8V71J9\SQL2008');
-define('_DB_USER', 'sa');
-define('_DB_PASS', 'citypost@2018@*#');
+define('_DB_SERVER', 'WIN-T2JRC8V71J9');
+define('_DB_USER', 'qbit_user');
+define('_DB_PASS', 'Abcd@#2019');
 define('_DB_NAME', 'qbit');
 $connection = sqlsrv_connect( _DB_SERVER, array( "Database"=> _DB_NAME, "UID"=>_DB_USER, "PWD"=>_DB_PASS, "CharacterSet" => "UTF-8"));
 if( !$connection ) {
@@ -11,6 +23,25 @@ if( !$connection ) {
     echo json_encode($response);
     exit();
 }
+
+function checkToken($token){
+    $arr_token = array();
+    for ($i = 0; $i <= 60; $i++){
+        $time_c         = time() + $i;
+        $time_t         = time() - $i;
+        $key_start      = 'DONG';
+        $key_end        = 'CHINH';
+        $arr_token[]    = md5(md5($key_start.$time_c.$key_end));
+        $arr_token[]    = md5(md5($key_start.$time_t.$key_end));
+    }
+    if(in_array($token, $arr_token)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+
 
 function insertSqlserver($table, $colum, $data){
     global $connection;

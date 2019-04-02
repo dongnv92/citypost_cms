@@ -391,3 +391,11 @@ function getProcessTransactions($tranID){
 /*
  * SQL QUERY SELECT DATETIME select * from tblTransactions where CONVERT(datetime, timeReq, 103) between CONVERT(datetime, '10/06/2018 00:00:00', 104) and CONVERT(datetime, '14/6/2018 23:59:59', 104)
  * */
+
+
+function getToken(){
+    $time       = time();
+    $key_start  = 'DONG';
+    $key_end    = 'CHINH';
+    return md5(md5($time.$key_start.$key_end));
+}

@@ -11,8 +11,6 @@ error_reporting(0);
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 require_once 'db.php';
 $connection = sqlsrv_connect( _DB_SERVER, array( "Database"=> _DB_NAME, "UID"=>_DB_USER, "PWD"=>_DB_PASS, "CharacterSet" => "UTF-8"));
-
-
 if( !$connection ) {
     echo "<center>Connection fail.</center>";
     exit();
